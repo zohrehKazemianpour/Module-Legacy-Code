@@ -13,7 +13,8 @@ To run:
 3. Activate the virtual environment: `. .venv/bin/activate`
 4. Install dependencies: `pip install -r requirements.txt`
 5. Run the database: `../db/run.sh` (you must have Docker installed and running).
-6. Create the database schema: `../db/create-schema.sh`
+6.run the server python3 main.py
+7. Create the database schema: `../db/create-schema.sh`
 
 You may want to run `python3 populate.py` to populate sample data.
 
