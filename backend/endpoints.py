@@ -179,6 +179,25 @@ def get_bloom(id_str):
 
 
 @jwt_required()
+def do_rebloom(id_str):
+    try:
+        id_int = int(id_str)
+    except ValueError:
+        return make_response((f"Invalid bloom id", 400))
+
+    original = blooms.get_bloom(id_int)
+    if original is None:
+        return make_response((f"Bloom not found", 404))
+
+    user = get_current_user()
+
+    # Create a new bloom with the same content, referencing the original bloom
+    blooms.add_bloom(sender=user, content=original.content, original_bloom_id=id_int)
+
+    return jsonify({"success": True})
+
+
+@jwt_required()
 def home_timeline():
     current_user = get_current_user()
 
