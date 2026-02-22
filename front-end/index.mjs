@@ -43,6 +43,25 @@ async function init() {
   document.addEventListener("state-change", () => {
     handleRouteChange();
   });
+
+  
+  document.addEventListener("click", async (event) => {
+    const btn = event.target.closest && event.target.closest('[data-action="rebloom"]');
+    if (!btn) return;
+
+    const article = btn.closest && btn.closest('[data-bloom]');
+    if (!article) return;
+
+    const bloomId = article.getAttribute('data-bloom-id');
+    if (!bloomId) return;
+
+    try {
+      await apiService.postRebloom(bloomId);
+    } catch (err) {
+      // errors are already handled/displayed by apiService
+      console.error('Rebloom failed', err);
+    }
+  });
 }
 
 // TODO Check any unhandled errors bubble up to this central handler

@@ -21,15 +21,44 @@ const createBloom = (template, bloom) => {
   const bloomTimeLink = bloomFrag.querySelector("a:has(> [data-time])");
   const bloomContent = bloomFrag.querySelector("[data-content]");
 
+  
+  const rebloomInfo = bloomFrag.querySelector("[data-rebloom-info]");
+  const rebloomSender = bloomFrag.querySelector("[data-rebloom-sender]");
+  const rebloomCount = bloomFrag.querySelector("[data-rebloom-count]");
+
   bloomArticle.setAttribute("data-bloom-id", bloom.id);
-  bloomUsername.setAttribute("href", `/profile/${bloom.sender}`);
-  bloomUsername.textContent = bloom.sender;
+
+
+  if (bloom.original_sender) {
+    
+    bloomUsername.setAttribute("href", `/profile/${bloom.original_sender}`);
+    bloomUsername.textContent = bloom.original_sender;
+
+  
+    if (rebloomInfo && rebloomSender) {
+      rebloomInfo.hidden = false;
+      rebloomSender.setAttribute("href", `/profile/${bloom.sender}`);
+      rebloomSender.textContent = bloom.sender;
+    }
+  } else {
+    bloomUsername.setAttribute("href", `/profile/${bloom.sender}`);
+    bloomUsername.textContent = bloom.sender;
+    if (rebloomInfo) rebloomInfo.hidden = true;
+  }
+
   bloomTime.textContent = _formatTimestamp(bloom.sent_timestamp);
-  bloomTimeLink.setAttribute("href", `/bloom/${bloom.id}`);
+
+  const timeLink = bloomTime ? bloomTime.closest("a") : null;
+  if (timeLink) timeLink.setAttribute("href", `/bloom/${bloom.id}`);
   bloomContent.replaceChildren(
     ...bloomParser.parseFromString(_formatHashtags(bloom.content), "text/html")
       .body.childNodes
   );
+
+  
+  if (rebloomCount) {
+    rebloomCount.textContent = String(bloom.rebloom_count ?? 0);
+  }
 
   return bloomFrag;
 };
